@@ -29,5 +29,9 @@ module Locksmith
 
     def aws_id=(value); @aws_id = value; end
     def aws_secret=(value); @aws_secret = value; end
+
+    def redis_url
+      @redis_url ||= env!("REDIS_URL")
+    end
   end
 end
