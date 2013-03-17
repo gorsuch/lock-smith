@@ -20,16 +20,18 @@ module Locksmith
     end
 
     def create(name, ttl, id)
-      redis.setnx(name, id)
-      redis.expire(name, ttl)
+      if redis.setnx(name, id)
+        redis.expire(name, ttl)
+        true
+      else
+        false
+      end
     end
 
     def delete(name, id)
       redis.watch(name) do
         if redis.get(name) == id
-          redis.multi do
-            redis.delete(name)
-          end
+          redis.del(name)
           true
         else
           redis.unwatch
